@@ -1,39 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: semebrah <semebrah@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/04 15:01:06 by semebrah          #+#    #+#             */
+/*   Created: 2025/12/04 15:01:03 by semebrah          #+#    #+#             */
 /*   Updated: 2025/12/04 15:01:10 by semebrah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "get_next_line.h"
+#include <fcntl.h>
+#include <stdio.h>
 
-# include <fcntl.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <unistd.h>
+void	ft_display_file(int fd)
+{
+	char	*res;
+	char	c;
 
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 100
-# endif
+	if (fd == -1)
+	{
+		dprintf(1, "Cannot read file.\n");
+		return ;
+	}
+	while ((res = get_next_line(fd)))
+	{
+		dprintf(1, "%s", res);
+		dprintf(1, ">> Press 'Enter' to continue: ");
+		scanf("%c", &c);
+		if (c != '\n')
+			break ;
+	}
+	close(fd);
+}
 
-char	*get_next_line(int fd);
-
-void	*ft_memset(void *s, int c, size_t n);
-
-size_t	ft_strlen(const char *s);
-
-ssize_t	ft_index(const char *s, char c, size_t size);
-
-char	*ft_strdup(const char *s);
-
-char	*ft_str_append(char *s1, char *s2, size_t size);
-
-void	ft_move_remainder(char *buff, size_t start, size_t size);
-
-#endif
+int	main(int argc, char **argv)
+{
+	if (argc == 1)
+		ft_display_file(0);
+	if (argc == 2)
+		ft_display_file(open(argv[1], O_RDONLY));
+}
