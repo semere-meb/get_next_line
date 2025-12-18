@@ -14,30 +14,28 @@
 
 char	*get_next_line(int fd)
 {
-	static char	buffer[BUFFER_SIZE];
-	int			index;
+	static char	buff[BUFFER_SIZE];
+	int			ix;
 	ssize_t		readbytes;
 	char		*temp;
 
 	temp = NULL;
 	while (1)
 	{
-		index = ft_index(buffer, '\n', BUFFER_SIZE);
-		if (index > -1)
+		ix = get_index(buff, '\n', BUFFER_SIZE);
+		if (ix > -1)
 		{
-			temp = ft_str_append(temp, buffer, index + 1);
-			ft_move_remainder(buffer, index + 1, BUFFER_SIZE);
+			temp = append(temp, buff, ix + 1);
+			shift_remainder(buff, ix + 1, BUFFER_SIZE);
 			return (temp);
 		}
 		else
 		{
-			temp = ft_str_append(temp, buffer, BUFFER_SIZE);
-			ft_memset(buffer, 0, BUFFER_SIZE);
-			readbytes = read(fd, buffer, BUFFER_SIZE);
-			if (readbytes <= 0 && ft_strlen(temp))
+			temp = append(temp, buff, BUFFER_SIZE);
+			ft_memset(buff, 0, BUFFER_SIZE);
+			readbytes = read(fd, buff, BUFFER_SIZE);
+			if (readbytes < 1)
 				return (temp);
-			else if (readbytes <= 0 && !ft_strlen(temp))
-				return (NULL);
 		}
 	}
 }

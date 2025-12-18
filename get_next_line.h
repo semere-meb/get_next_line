@@ -28,12 +28,10 @@ void	*ft_memset(void *s, int c, size_t n);
 
 size_t	ft_strlen(const char *s);
 
-ssize_t	ft_index(const char *s, char c, size_t size);
+ssize_t	get_index(const char *s, char c, size_t size);
 
-char	*ft_strdup(const char *s);
+char	*append(char *s1, char *s2, size_t size);
 
-char	*ft_str_append(char *s1, char *s2, size_t size);
-
-void	ft_move_remainder(char *buff, size_t start, size_t size);
+void	shift_remainder(char *buff, size_t start, size_t size);
 
 #endif

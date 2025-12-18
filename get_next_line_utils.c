@@ -29,7 +29,7 @@ void	*ft_memset(void *s, int c, size_t n)
 	return (s);
 }
 
-ssize_t	ft_index(const char *s, char c, size_t size)
+ssize_t	get_index(const char *s, char c, size_t size)
 {
 	size_t	i;
 
@@ -45,16 +45,25 @@ ssize_t	ft_index(const char *s, char c, size_t size)
 	return (-1);
 }
 
-char	*ft_str_append(char *s1, char *s2, size_t size)
+void	shift_remainder(char *buff, size_t start, size_t size)
+{
+	ssize_t	i;
+
+	i = -1;
+	while (start + ++i < size)
+		buff[i] = buff[start + i];
+	ft_memset(&buff[i], 0, size - i);
+}
+
+char	*append(char *s1, char *s2, size_t size)
 {
 	ssize_t	i;
 	size_t	s1_len;
 	char	*new;
 
+	s1_len = 0;
 	if (s1)
 		s1_len = ft_strlen(s1);
-	else
-		s1_len = 0;
 	new = malloc(s1_len + size + 1);
 	if (!new)
 		return (NULL);
@@ -67,14 +76,7 @@ char	*ft_str_append(char *s1, char *s2, size_t size)
 	new[s1_len + i] = '\0';
 	if (s1)
 		free(s1);
+	if (!ft_strlen(new))
+		return (free(new), NULL);
 	return (new);
-}
-
-void	ft_move_remainder(char *buff, size_t start, size_t size)
-{
-	ssize_t	i;
-
-	i = -1;
-	while (start + ++i < size)
-		buff[i] = buff[start + i];
 }
