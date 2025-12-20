@@ -17,8 +17,8 @@
 void	ft_display_file(int fd)
 {
 	char	*res;
-	char	c;
 
+	// char	c;
 	if (fd == -1)
 	{
 		dprintf(1, "Cannot read file.\n");
@@ -27,10 +27,11 @@ void	ft_display_file(int fd)
 	while ((res = get_next_line(fd)))
 	{
 		dprintf(1, "%s", res);
-		dprintf(1, ">> Press 'Enter' to continue: ");
-		scanf("%c", &c);
-		if (c != '\n')
-			break ;
+		// dprintf(1, ">> Press 'Enter' to continue: ");
+		// scanf("%c", &c);
+		// if (c != '\n')
+		// 	break ;
+		free(res);
 	}
 	close(fd);
 }

@@ -29,13 +29,14 @@ char	*get_next_line(int fd)
 			shift_remainder(buff, ix + 1, BUFFER_SIZE);
 			return (temp);
 		}
-		else
+		temp = append(temp, buff, BUFFER_SIZE);
+		ft_memset(buff, 0, BUFFER_SIZE);
+		readbytes = read(fd, buff, BUFFER_SIZE);
+		if (readbytes < 1)
 		{
-			temp = append(temp, buff, BUFFER_SIZE);
-			ft_memset(buff, 0, BUFFER_SIZE);
-			readbytes = read(fd, buff, BUFFER_SIZE);
-			if (readbytes < 1)
-				return (temp);
+			if (!temp || !ft_strlen(temp))
+				return (NULL);
+			return (temp);
 		}
 	}
 }
