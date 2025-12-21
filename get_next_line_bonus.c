@@ -35,7 +35,7 @@ char	*get_next_line(int fd)
 		readbytes = read(fd, buff[fd], BUFFER_SIZE);
 		if (readbytes == 0)
 			return (temp);
-		if (readbytes < 1)
+		if (readbytes < 0)
 			return (NULL);
 	}
 }

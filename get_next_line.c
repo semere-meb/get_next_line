@@ -32,11 +32,9 @@ char	*get_next_line(int fd)
 		temp = append(temp, buff, BUFFER_SIZE);
 		ft_memset(buff, 0, BUFFER_SIZE);
 		readbytes = read(fd, buff, BUFFER_SIZE);
-		if (readbytes < 1)
-		{
-			if (!temp || !ft_strlen(temp))
-				return (NULL);
+		if (readbytes == 0)
 			return (temp);
-		}
+		if (readbytes < 0)
+			return (NULL);
 	}
 }
