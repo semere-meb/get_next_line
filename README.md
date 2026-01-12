@@ -25,6 +25,15 @@ An example of usage of the program is as the following.
 #include <stdio.h>
 #include <sys/select.h>
 
+void ft_display_file(int fd) {
+  char *res;
+  while ((res = get_next_line(fd))) {
+    dprintf(1, "%s", res);
+    free(res);
+  }
+  close(fd);
+}
+
 void	display_files(int count, char **f_names)
 {
 	char	*res;
