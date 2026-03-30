@@ -1,82 +1,105 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
+/*   get_next_line_bonus_utils.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: semebrah <semebrah@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/04 15:01:03 by semebrah          #+#    #+#             */
-/*   Updated: 2025/12/20 21:36:20 by semebrah         ###   ########.fr       */
+/*   Created: 2026/03/30 20:38:48 by semebrah          #+#    #+#             */
+/*   Updated: 2026/03/30 20:38:54 by semebrah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 
-size_t	ft_strlen(const char *s)
+t_file	*create_file(int fd)
 {
-	size_t	len;
+	t_file	*file;
 
-	len = 0;
-	while (s[len])
-		len++;
-	return (len);
+	file = malloc(sizeof(t_file));
+	if (!file)
+		return (NULL);
+	file->fd = fd;
+	file->stash = NULL;
+	file->stash_size = 0;
+	file->next = NULL;
+	return (file);
 }
 
-void	*ft_memset(void *s, int c, size_t n)
+t_file	*get_file(t_file **repo, int fd)
 {
-	while (n > 0)
-		((char *)s)[--n] = (char)c;
-	return (s);
-}
+	t_file	*curr;
+	t_file	*prev;
 
-ssize_t	get_index(const char *s, char c, size_t size)
-{
-	size_t	i;
-
-	if (!s || size == 0)
-		return (-1);
-	i = 0;
-	while (i < size)
+	if (!repo)
+		return (NULL);
+	if (!*repo)
 	{
-		if (s[i] == c)
-			return ((ssize_t)i);
-		i++;
+		*repo = create_file(fd);
+		return (*repo);
+	}
+	curr = *repo;
+	while (curr)
+	{
+		if (curr->fd == fd)
+			return (curr);
+		prev = curr;
+		curr = curr->next;
+	}
+	prev->next = create_file(fd);
+	return (prev->next);
+}
+
+int	find(char *str, char c, int size)
+{
+	int	ix;
+
+	ix = 0;
+	if (!str)
+		return (-1);
+	while (ix < size)
+	{
+		if (str[ix] == c)
+			return (ix);
+		ix++;
 	}
 	return (-1);
 }
 
-void	shift_remainder(char *buff, size_t start, size_t size)
+void	*ft_memcpy(void *dest, const void *src, size_t n)
 {
-	ssize_t	i;
+	size_t				i;
+	unsigned char		*_dest;
+	const unsigned char	*_src = src;
 
-	i = -1;
-	while (start + ++i < size)
-		buff[i] = buff[start + i];
-	ft_memset(&buff[i], 0, size - i);
+	i = 0;
+	_dest = dest;
+	while (i < n)
+	{
+		_dest[i] = _src[i];
+		i++;
+	}
+	return (dest);
 }
 
-char	*append(char *s1, char *s2, size_t size)
+void	update_stash(t_file *file, size_t start, size_t new_size)
 {
-	ssize_t	i;
-	size_t	s1_len;
 	char	*new;
 
-	s1_len = 0;
-	if (s1)
-		s1_len = ft_strlen(s1);
-	new = malloc(s1_len + size + 1);
+	if (!file)
+		return ;
+	if (!new_size)
+	{
+		free(file->stash);
+		file->stash = NULL;
+		file->stash_size = 0;
+		return ;
+	}
+	new = malloc(new_size);
 	if (!new)
-		return (NULL);
-	i = -1;
-	while ((size_t)++i < s1_len && s1[i])
-		new[i] = s1[i];
-	i = -1;
-	while ((size_t)++i < size && s2[i])
-		new[s1_len + i] = s2[i];
-	new[s1_len + i] = '\0';
-	if (s1)
-		free(s1);
-	if (!ft_strlen(new))
-		return (free(new), NULL);
-	return (new);
+		return ;
+	ft_memcpy(new, &file->stash[start], file->stash_size - start);
+	free(file->stash);
+	file->stash = new;
+	file->stash_size = new_size;
 }

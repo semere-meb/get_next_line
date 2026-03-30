@@ -1,37 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: semebrah <semebrah@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/04 15:01:06 by semebrah          #+#    #+#             */
-/*   Updated: 2025/12/04 15:01:10 by semebrah         ###   ########.fr       */
+/*   Created: 2026/03/30 20:38:30 by semebrah          #+#    #+#             */
+/*   Updated: 2026/03/30 20:38:54 by semebrah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
-# include <fcntl.h>
-# include <stdio.h>
 # include <stdlib.h>
-# include <unistd.h>
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 100
+#  define BUFFER_SIZE 42
 # endif
 
-char	*get_next_line(int fd);
+typedef struct s_file
+{
+	int				fd;
+	char			*stash;
+	int				stash_size;
+	struct s_file	*next;
 
-void	*ft_memset(void *s, int c, size_t n);
+}					t_file;
 
-size_t	ft_strlen(const char *s);
+char				*get_next_line(int fd);
 
-ssize_t	get_index(const char *s, char c, size_t size);
-
-char	*append(char *s1, char *s2, size_t size);
-
-void	shift_remainder(char *buff, size_t start, size_t size);
+t_file				*create_file(int fd);
+t_file				*get_file(t_file **repo, int fd);
+int					find(char *str, char c, int size);
+void				*ft_memcpy(void *dest, const void *src, size_t n);
+void				update_stash(t_file *file, size_t start, size_t new_size);
+void				free_file(t_file **repo, t_file *file);
 
 #endif
